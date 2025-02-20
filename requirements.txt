@@ -1,5 +1,4 @@
 alembic
-audioop-lts
 audioread
 certifi
 cffi

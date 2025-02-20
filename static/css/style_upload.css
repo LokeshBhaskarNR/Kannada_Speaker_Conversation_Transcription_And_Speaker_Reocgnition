@@ -1,0 +1,347 @@
+/* Base styling */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+:root {
+  --primary: #6c63ff;
+  --secondary: #4dacff;
+  --dark: #1f1f1f;
+  --light: #f5f5f5;
+  --success: #28a745;
+  --accent: #ff6b6b;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--dark);
+  color: var(--light);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Animated Background */
+body:before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(125deg, #2c3e50, #1a1a2e);
+  z-index: -2;
+}
+
+body:after {
+  content: '';
+  position: fixed;
+  width: 300%;
+  height: 300%;
+  top: -100%;
+  left: -100%;
+  background: 
+    radial-gradient(circle at 20% 35%, rgba(108, 99, 255, 0.15) 0%, transparent 25%),
+    radial-gradient(circle at 75% 80%, rgba(77, 172, 255, 0.1) 0%, transparent 20%);
+  animation: gradientMove 15s linear infinite;
+  z-index: -1;
+}
+
+@keyframes gradientMove {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 30px;
+  border-radius: 20px;
+  background: rgba(31, 31, 31, 0.8);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Floating particles effect */
+.container:before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background-image: 
+    radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+    radial-gradient(circle, rgba(255, 255, 255, 0.05) 2px, transparent 2px);
+  background-size: 40px 40px;
+  background-position: 0 0, 20px 20px;
+  animation: particleFloat 20s linear infinite;
+  z-index: -1;
+}
+
+@keyframes particleFloat {
+  0% {
+    transform: translateY(0) rotate(0deg);
+  }
+  100% {
+    transform: translateY(20%) rotate(10deg);
+  }
+}
+
+h1, h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  position: relative;
+  display: inline-block;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+h1:after, h2:after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  border-radius: 3px;
+}
+
+hr {
+  margin: 40px 0;
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+}
+
+/* Input styling */
+input[type="number"], input[type="file"] {
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  background: rgba(214, 213, 213, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: black;
+  font-family: 'Poppins', sans-serif;
+  transition: all 0.3s ease;
+}
+
+input[type="number"]:focus, input[type="file"]:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 10px rgba(108, 99, 255, 0.5);
+}
+
+/* File input styling */
+input[type="file"] {
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  position: relative;
+}
+
+input[type="file"]::file-selector-button {
+  margin-right: 15px;
+  border: none;
+  background: var(--primary);
+  padding: 8px 15px;
+  border-radius: 6px;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+input[type="file"]::file-selector-button:hover {
+  background: var(--secondary);
+  transform: scale(1.05);
+}
+
+/* Form sections */
+.upload-section, .record-section {
+  margin-bottom: 30px;
+  padding: 25px;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.03);
+  transition: all 0.3s ease;
+}
+
+.upload-section:hover, .record-section:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Button styling */
+.btn {
+  padding: 12px 24px;
+  background: linear-gradient(45deg, var(--primary), var(--secondary));
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  margin: 10px 0;
+}
+
+.btn:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: all 0.5s ease;
+}
+
+/* Button hover effects */
+.btn:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 7px 20px rgba(108, 99, 255, 0.4);
+}
+
+.btn:hover:before {
+  left: 100%;
+}
+
+/* Button active/clicked state */
+.btn.clicked {
+  transform: scale(0.95);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(45deg, var(--secondary), var(--primary));
+}
+
+/* Disabled button */
+.btn:disabled {
+  background: #666;
+  cursor: not-allowed;
+  opacity: 0.7;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Enhanced visualizer styling */
+#visualizer {
+  display: block;
+  margin: 20px auto;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes pulseGlow {
+    0%, 100% {
+      box-shadow: 
+        0 0 15px rgba(108, 99, 255, 0.7),
+        0 0 30px rgba(77, 172, 255, 0.5);
+    }
+    50% {
+      box-shadow: 
+        0 0 25px rgba(108, 99, 255, 0.9),
+        0 0 50px rgba(77, 172, 255, 0.7),
+        0 0 75px rgba(255, 107, 107, 0.5);
+    }
+  }
+
+/* Audio player styling */
+.audio-container {
+  margin: 25px 0;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  display: none;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.audio-container:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(255, 255, 255, 0.05);
+}
+
+#audioPlayback {
+  width: 100%;
+  margin-bottom: 10px;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.05));
+}
+
+/* Custom audio player controls */
+audio::-webkit-media-controls-panel {
+  background: linear-gradient(135deg, #ffffff, #fffc78);
+}
+
+audio::-webkit-media-controls-play-button,
+audio::-webkit-media-controls-volume-slider-container,
+audio::-webkit-media-controls-mute-button,
+audio::-webkit-media-controls-timeline,
+audio::-webkit-media-controls-current-time-display,
+audio::-webkit-media-controls-time-remaining-display {
+  filter: brightness(1.5);
+}
+
+#audioFilename {
+  font-size: 14px;
+  color: #ccc;
+  margin-top: 5px;
+}
+
+/* Labels styling */
+label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 500;
+  color: #ddd;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .container {
+    margin: 20px;
+    padding: 20px;
+  }
+  
+  .btn {
+    width: 100%;
+  }
+}
+
+/* Unique Pulse Animation for Record Button */
+#startRecord {
+  background: linear-gradient(45deg, #01395e, #016137);
+  animation: recordPulse 2s infinite alternate;
+}
+
+@keyframes recordPulse {
+  0% {
+    box-shadow: 0 0 10px rgba(92, 255, 163, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 20px rgba(137, 251, 148, 0.8), 0 0 40px rgba(255, 43, 43, 0.4);
+  }
+}
+
+#stopRecord {
+  background: linear-gradient(45deg, #ff9966, #ff5e62);
+}
+
+#uploadRecorded {
+  background: linear-gradient(45deg, #4facfe, #00f2fe);
+}

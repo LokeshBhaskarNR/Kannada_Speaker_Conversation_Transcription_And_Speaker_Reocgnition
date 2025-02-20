@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Speaker</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #1a1a2e;
+            --secondary-dark: #16213e;
+            --accent-color: #4d4dff;
+            --text-primary: #e6e6e6;
+            --text-secondary: #b3b3b3;
+        }
+
+        body {
+            background: var(--primary-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(125deg, #1a1a2e 0%, #16213e 100%);
+            z-index: -1;
+            animation: gradientAnimation 15s ease infinite;
+        }
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .card {
+            background: var(--secondary-dark);
+            border: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 2rem;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-header {
+            background: var(--accent-color);
+            border-bottom: none;
+            padding: 1.5rem;
+        }
+
+        .reading-passage {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 1rem 0;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+        }
+
+        .btn {
+            transition: all 0.3s ease;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+        }
+
+        .btn-primary {
+            background: var(--accent-color);
+        }
+
+        .btn-primary:hover {
+            background: #6666ff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(77, 77, 255, 0.3);
+        }
+
+        .btn-danger {
+            background: #ff4d4d;
+        }
+
+        .btn-danger:hover {
+            background: #ff6666;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 77, 77, 0.3);
+        }
+
+        .form-control {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            padding: 0.8rem;
+        }
+
+        .form-control:focus {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent-color);
+            color: var(--text-primary);
+            box-shadow: 0 0 0 0.2rem rgba(77, 77, 255, 0.25);
+        }
+
+        .timer {
+            font-family: monospace;
+            font-size: 2rem;
+            color: white;
+            text-shadow: 0 0 10px rgb(255, 255, 255);
+        }
+
+        audio::-webkit-media-controls-panel {
+            background: rgb(255, 255, 255);
+            color: rgb(255, 255, 255);
+        }
+
+        /* Floating particles animation */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: rgba(77, 77, 255, 0.2);
+            border-radius: 50%;
+            animation: float 20s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) translateX(0); opacity: 0; }
+            50% { opacity: 0.5; }
+            100% { transform: translateY(-100vh) translateX(100vw); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated particles -->
+    <div class="particles">
+        <div class="particle" style="left: 10%; animation-delay: 0s;"></div>
+        <div class="particle" style="left: 30%; animation-delay: 2s;"></div>
+        <div class="particle" style="left: 50%; animation-delay: 4s;"></div>
+        <div class="particle" style="left: 70%; animation-delay: 6s;"></div>
+        <div class="particle" style="left: 90%; animation-delay: 8s;"></div>
+    </div>
+
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Add New Speaker</h1>
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="mb-0">Instructions</h3>
+            </div>
+            <div class="card-body">
+                <p>To add a new speaker to the model, please follow these steps:</p>
+                <ol>
+                    <li>Enter the speaker's name in the form below.</li>
+                    <li>Either record audio by reading the passage below (aim for about 5-10 minutes of speech) or upload an existing audio file.</li>
+                    <li>Submit the form to add the speaker and retrain the model.</li>
+                </ol>
+                <p class="text-danger">Note: For optimal recognition, please record in a quiet environment with minimal background noise.</p>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="mb-0">Reading Passage</h3>
+            </div>
+            <div class="card-body">
+                <div class="reading-passage">
+                    <center><b><h4>ಕನ್ನಡ ಪ್ರಬಂಧ (Kannada Essay)</h4></b></center>
+                    <p style="text-align: justify;">ನಮ್ಮ ಕರ್ನಾಟಕ ರಾಜ್ಯವು ಅತ್ಯಂತ ಸುಂದರವಾದ ಪ್ರದೇಶವಾಗಿದೆ. ಇಲ್ಲಿನ ನೈಸರ್ಗಿಕ ಸೌಂದರ್ಯ, ಸಮೃದ್ಧ ಸಂಸ್ಕೃತಿ ಮತ್ತು ಐತಿಹಾಸಿಕ ಪರಂಪರೆ ವಿಶ್ವವಿಖ್ಯಾತವಾಗಿದೆ. ಕರ್ನಾಟಕದ ಕರಾವಳಿ ತೀರ, ಮಲೆನಾಡಿನ ಅರಣ್ಯಗಳು, ಬಯಲುಸೀಮೆಯ ವಿಶಾಲ ಪ್ರದೇಶಗಳು ಮತ್ತು ಉತ್ತರ ಕರ್ನಾಟಕದ ಬಂಡೆಗಳು ಪ್ರವಾಸಿಗರನ್ನು ಸದಾ ಆಕರ್ಷಿಸುತ್ತವೆ.</p>
+                    <p style="text-align: justify;">ನಮ್ಮ ರಾಜ್ಯದಲ್ಲಿ ಹಂಪಿ, ಬೇಲೂರು, ಹಳೇಬೀಡು, ಬಾದಾಮಿ, ಐಹೊಳೆ ಮುಂತಾದ ಐತಿಹಾಸಿಕ ತಾಣಗಳಿವೆ. ಇವು ನಮ್ಮ ಪೂರ್ವಿಕರ ವಾಸ್ತುಶಿಲ್ಪ ಕೌಶಲ್ಯವನ್ನು ಪ್ರದರ್ಶಿಸುತ್ತವೆ. ಕನ್ನಡ ಭಾಷೆ, ಸಾಹಿತ್ಯ ಮತ್ತು ಕಲೆಗಳು ನಮ್ಮ ಸಾಂಸ್ಕೃತಿಕ ಸಂಪತ್ತನ್ನು ಹೆಚ್ಚಿಸುತ್ತವೆ.</p>
+                    <p style="text-align: justify;">ಕರ್ನಾಟಕದ ಜನರು ವಿವಿಧ ಭಾಷೆ, ಧರ್ಮ ಮತ್ತು ಸಂಸ್ಕೃತಿಗಳ ಜನರೊಂದಿಗೆ ಸಹಬಾಳ್ವೆ ನಡೆಸುತ್ತಾರೆ. ನಮ್ಮ ರಾಜ್ಯದ ಸಾಂಪ್ರದಾಯಿಕ ನೃತ್ಯ, ಸಂಗೀತ ಮತ್ತು ಜಾನಪದ ಕಲೆಗಳು ವಿಶ್ವದಾದ್ಯಂತ ಪ್ರಸಿದ್ಧವಾಗಿವೆ.</p>
+                    <p style="text-align: justify;">
+                        ಮಾನವ ಜೀವನದಲ್ಲಿ ಶಿಕ್ಷಣದ ಮಹತ್ವ ಅತ್ಯಂತ ಪ್ರಮುಖವಾಗಿದೆ. ಶಿಕ್ಷಣವು ವ್ಯಕ್ತಿಯ ಜ್ಞಾನವನ್ನು ವಿಸ್ತರಿಸಲು ಮತ್ತು ಸಮರ್ಥ ವ್ಯಕ್ತಿತ್ವವನ್ನು ರೂಪಿಸಲು ಸಹಾಯಕವಾಗಿದೆ. ಅರ್ಥಪೂರ್ಣ ಜೀವನ ನಡೆಸಲು ಮತ್ತು ಉತ್ತಮ ಭವಿಷ್ಯ ನಿರ್ಮಿಸಲು ಶಿಕ್ಷಣ ಅವಶ್ಯಕವಾಗಿದೆ. 
+                        ಶಿಕ್ಷಣವು ವ್ಯಕ್ತಿಗೆ ಶಿಸ್ತು, ಮಾನವೀಯತೆ ಮತ್ತು ನೈತಿಕ ಮೌಲ್ಯಗಳನ್ನು ಕಲಿಸುತ್ತದೆ. ಜೊತೆಗೆ, ಇದು ಸಮಾಜದಲ್ಲಿ ಉತ್ತಮ ಹುದ್ದೆ ಮತ್ತು ಆರ್ಥಿಕ ಸ್ಥಿರತೆ ಪಡೆಯಲು ಸಹಕಾರಿಯಾಗುತ್ತದೆ. ಪ್ರಾಚೀನ ಕಾಲದಿಂದಲೂ ಭಾರತವು ಜ್ಞಾನ ಮತ್ತು ಶಿಕ್ಷಣದ ಕೇಂದ್ರವಾಗಿ ಪರಿಗಣಿಸಲಾಗಿದೆ.                         
+                        ಇಂದಿನ ಯುಗದಲ್ಲಿ, ತಂತ್ರಜ್ಞಾನವು ಶಿಕ್ಷಣದ ಕ್ಷೇತ್ರದಲ್ಲಿ ಮಹತ್ತರ ಪ್ರಭಾವ ಬೀರಿದೆ. ಆನ್‌ಲೈನ್ ಕಲಿಕೆ, ಡಿಜಿಟಲ್ ಶಿಕ್ಷಣ ಹಾಗೂ ತಂತ್ರಜ್ಞಾನ-ಆಧಾರಿತ ಶಿಕ್ಷಣವು ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ಹೊಸದೊಂದು ಅಧ್ಯಯನ ಅನುಭವವನ್ನು ನೀಡುತ್ತಿದೆ.                        
+                        ಆದ್ದರಿಂದ, ಶಿಕ್ಷಣವೇ ಬೆಳಕಾಗಿದೆ. ಪ್ರತಿಯೊಬ್ಬ ವ್ಯಕ್ತಿಯೂ ಉತ್ತಮ ಶಿಕ್ಷಣ ಪಡೆದು ಜೀವನದಲ್ಲಿ ಯಶಸ್ಸು ಸಾಧಿಸಬೇಕು. ಒಂದು ಉತ್ತಮ ಸಮಾಜ ನಿರ್ಮಾಣಕ್ಕಾಗಿ ಶಿಕ್ಷಣ ಅತಿ ಅವಶ್ಯಕವಾಗಿದೆ.
+                    </p>
+                        
+                </div>
+            </div>
+        </div>
+
+        <form id="speakerForm" action="{{ url_for('add_speaker') }}" method="POST" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="speaker_name" class="form-label">Speaker Name:</label>
+                <input type="text" class="form-control" id="speaker_name" name="speaker_name" required>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3 class="mb-0">Audio Input Option 1: Record Audio</h3>
+                </div>
+                <div class="card-body">
+                    <div class="recorder-container">
+                        <button type="button" id="recordButton" class="btn btn-danger">Start Recording</button>
+                        <button type="button" id="stopButton" class="btn btn-secondary">Stop Recording</button>
+                        <center><div class="timer" id="recordingTimer">00:00</div></center>
+                        <p id="recordingStatus"></p>
+                    </div>
+                    
+                    <div id="audioPreviewContainer" style="display: none;">
+                        <h4>Preview Recorded Audio:</h4>
+                        <audio id="audioPreview" style="filter: invert(0);" controls class="audio-preview"></audio>
+                    </div>
+                    
+                    <input type="hidden" id="recordedAudio" name="recordedAudio">
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3 class="mb-0">Audio Input Option 2: Upload Audio File</h3>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="audio" class="form-label">Upload Audio File (WAV format recommended):</label>
+                        <input type="file" class="form-control" id="audio" name="audio" accept="audio/*">
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-grid gap-2 mb-5">
+                <button type="submit" class="btn btn-primary btn-lg">Add Speaker & Retrain Model</button>
+                <a href="{{ url_for('home') }}" class="btn btn-secondary">Back To Home Page</a>
+
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Original JavaScript for audio recording remains the same
+        let mediaRecorder;
+        let audioChunks = [];
+        let startTime;
+        let timerInterval;
+        
+        document.getElementById('recordButton').addEventListener('click', startRecording);
+        document.getElementById('stopButton').addEventListener('click', stopRecording);
+        
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+                
+                mediaRecorder.addEventListener('dataavailable', event => {
+                    audioChunks.push(event.data);
+                });
+                
+                mediaRecorder.addEventListener('stop', () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    document.getElementById('audioPreview').src = audioUrl;
+                    document.getElementById('audioPreviewContainer').style.display = 'block';
+                    
+                    const reader = new FileReader();
+                    reader.readAsDataURL(audioBlob);
+                    reader.onloadend = () => {
+                        document.getElementById('recordedAudio').value = reader.result;
+                    };
+                });
+                
+                mediaRecorder.start();
+                document.getElementById('recordButton').style.display = 'none';
+                document.getElementById('stopButton').style.display = 'inline-block';
+                document.getElementById('recordingStatus').textContent = 'Recording in progress...';
+                
+                // Start timer
+                startTime = Date.now();
+                timerInterval = setInterval(updateTimer, 1000);
+                
+            } catch (err) {
+                console.error('Error accessing microphone:', err);
+                alert('Could not access microphone. Please check permissions and try again.');
+            }
+        }
+        
+        function stopRecording() {
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+                mediaRecorder.stream.getTracks().forEach(track => track.stop());
+                
+                document.getElementById('recordButton').style.display = 'inline-block';
+                document.getElementById('stopButton').style.display = 'none';
+                document.getElementById('recordingStatus').textContent = 'Recording completed';
+                
+                // Stop timer
+                clearInterval(timerInterval);
+            }
+        }
+        
+        function updateTimer() {
+            const elapsedMs = Date.now() - startTime;
+            const elapsedSec = Math.floor(elapsedMs / 1000);
+            const minutes = Math.floor(elapsedSec / 60);
+            const seconds = elapsedSec % 60;
+            
+            document.getElementById('recordingTimer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        // Form validation
+        document.getElementById('speakerForm').addEventListener('submit', function(event) {
+            const speakerName = document.getElementById('speaker_name').value;
+            const audioFile = document.getElementById('audio').files[0];
+            const recordedAudio = document.getElementById('recordedAudio').value;
+            
+            if (!speakerName) {
+                alert('Please enter a speaker name');
+                event.preventDefault();
+                return;
+            }
+            
+            if (!audioFile && !recordedAudio) {
+                alert('Please either record audio or upload an audio file');
+                event.preventDefault();
+                return;
+            }
+        });
+
+        // Add floating particles dynamically
+        function createParticles(count) {
+            const particlesContainer = document.querySelector('.particles');
+            for (let i = 0; i < count; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.animationDelay = `${Math.random() * 20}s`;
+                particle.style.opacity = Math.random() * 0.5;
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Create initial particles
+        createParticles(20);
+
+        // Add new particles periodically
+        setInterval(() => {
+            const particles = document.querySelectorAll('.particle');
+            if (particles.length < 30) {
+                createParticles(5);
+            }
+            // Remove old particles
+            particles.forEach(particle => {
+                if (particle.getBoundingClientRect().top < 0) {
+                    particle.remove();
+                }
+            });
+        }, 5000);
+    </script>
+</body>
+</html>

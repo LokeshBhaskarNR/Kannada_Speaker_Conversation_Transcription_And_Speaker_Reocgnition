@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Speaker Diarization</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary:rgb(205, 210, 233);
+            --primary-dark: #3a50c9;
+            --secondary: #0f1e4d;
+            --accent: #ff7e5f;
+            --light: #f5f7ff;
+            --dark: #131b36;
+            --gradient-bg: linear-gradient(135deg, #0f1e4d 0%, #263c7e 100%);
+            --card-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: var(--gradient-bg);
+            color: var(--light);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animation for particles */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.8rem;
+            margin: 2rem 0;
+            font-weight: 700;
+            background: linear-gradient(90deg, #4a6bff, #ff7e5f);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 5px 15px rgba(74, 107, 255, 0.3);
+            animation: fadeInDown 1s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .nav {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem 0;
+            animation: fadeIn 1s ease-out 0.3s both;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .nav a {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--light);
+            text-decoration: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .nav a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background: var(--primary);
+            transition: var(--transition);
+            z-index: -1;
+            border-radius: 30px;
+        }
+
+        .nav a:hover::before {
+            width: 100%;
+        }
+
+        .nav a:hover {
+            box-shadow: 0 5px 15px rgba(74, 107, 255, 0.4);
+            transform: translateY(-3px);
+            color: black;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            animation: fadeInUp 1s ease-out 0.5s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .content {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .content:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(74, 107, 255, 0.2);
+        }
+
+        .content::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(var(--primary-dark), transparent 70%);
+            opacity: 0.1;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .content:hover::before {
+            opacity: 0.2;
+            transform: scale(1.2);
+        }
+
+        h2 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--accent);
+            border-radius: 3px;
+            transition: var(--transition);
+        }
+
+        .content:hover h2::after {
+            width: 100%;
+        }
+
+        p {
+            margin-bottom: 1.2rem;
+            line-height: 1.7;
+            color: rgba(245, 247, 255, 0.9);
+        }
+
+        .highlight {
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2.5rem;
+        }
+
+        .feature-card {
+            background: rgba(19, 27, 54, 0.5);
+            border-radius: 15px;
+            padding: 1.5rem;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            background: rgba(19, 27, 54, 0.7);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            display: inline-block;
+            position: relative;
+        }
+
+        .feature-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.8rem;
+            color: var(--light);
+        }
+
+        .feature-description {
+            font-size: 0.9rem;
+            color: rgba(245, 247, 255, 0.8);
+        }
+
+        .language-support {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .language-title {
+            font-weight: 500;
+            color: var(--primary);
+        }
+
+        .language-badges {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .language-badge {
+            background: rgba(71, 24, 13, 0.2);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 126, 95, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(255, 126, 95, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 126, 95, 0);
+            }
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem 0;
+            font-size: 0.9rem;
+            color: rgba(245, 247, 255, 0.6);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .nav {
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            .content {
+                padding: 1.5rem;
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated particles background -->
+    <div class="particles" id="particles"></div>
+
+    <h1>WELCOME TO SPEAKER DIARIZATION APP...!</h1>
+    
+    <nav class="nav">
+        <a href="/upload">Upload Audio</a>
+        <a href="/model_info">Model Info</a>
+    </nav>
+    
+    <div class="container">
+        <div class="content">
+            <h2>ABOUT THE PROJECT</h2>
+            <p>
+                This Speaker Diarization system was developed as part of an internship at <span class="highlight">Bharat Electronics Limited (BEL)</span> by <span class="highlight">Lokesh B</span>, SJB Institue Of Technology, under the guidance of <span class="highlight">Madhukesh U H</span> Sir.
+                The project focuses on identifying and distinguishing different speakers in audio conversations with high accuracy.
+            </p>
+            <p>
+                Using <span class="highlight">OpenAI's Whisper model</span> for transcription and <span class="highlight">SVM classifier</span> for speaker recognition, 
+                this system can transcribe audio while tagging different speakers dynamically. It also allows for the addition of new speakers on the go.
+            </p>
+            <p>
+                The application is built with <span class="highlight">Flask</span> and supports both pre-recorded audio files and real-time recordings. The processed
+                text includes <span class="highlight">speaker labels</span>, making it highly useful for meetings, interviews, and forensic applications.
+            </p>
+
+            <!-- Added language support section -->
+            <div class="language-support">
+                <div class="language-title">Supported Languages:</div>
+                <div class="language-badges">
+                    <div class="language-badge">English</div>
+                    <div class="language-badge">ಕನ್ನಡ (Kannada)</div>
+                </div>
+            </div>
+
+            <!-- Added feature grid -->
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <div class="feature-title">SVM Classification</div>
+                    <div class="feature-description">
+                        Utilizes Support Vector Machines (SVM) for robust speaker classification with high accuracy even in noisy environments.
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🔊</div>
+                    <div class="feature-title">Real-time Processing</div>
+                    <div class="feature-description">
+                        Record directly in the browser and get speaker-tagged transcripts with minimal processing time.
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🧠</div>
+                    <div class="feature-title">Adaptive Learning</div>
+                    <div class="feature-description">
+                        System improves over time by learning from new speaker data, enhancing recognition accuracy.
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <div class="feature-title">Multilingual Support</div>
+                    <div class="feature-description">
+                        Full support for English and Kannada languages with potential to extend to more languages.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        © 2025 Speaker Diarization Project | Developed at Bharat Electronics Limited
+    </footer>
+
+    <script>
+        // Create animated particles
+        function createParticles() {
+            const particles = document.getElementById('particles');
+            const particleCount = 20;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random size
+                const size = Math.random() * 20 + 5;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Random position
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100;
+                particle.style.left = `${posX}%`;
+                particle.style.top = `${posY}%`;
+                
+                // Random animation duration and delay
+                const duration = Math.random() * 10 + 10;
+                const delay = Math.random() * 5;
+                particle.style.animationDuration = `${duration}s`;
+                particle.style.animationDelay = `${delay}s`;
+                
+                // Random opacity
+                particle.style.opacity = Math.random() * 0.5 + 0.1;
+                
+                particles.appendChild(particle);
+            }
+        }
+        
+        // Initialize particles on page load
+        document.addEventListener('DOMContentLoaded', createParticles);
+    </script>
+</body>
+</html>

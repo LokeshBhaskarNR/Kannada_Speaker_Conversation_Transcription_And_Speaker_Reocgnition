@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload or Record Audio</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style_upload.css') }}">
+
+</head>
+<body>
+    <div class="container">
+        <h1>Upload or Record an Audio File</h1>
+
+        <!-- File Upload Form -->
+        <div class="upload-section" style="text-align: justify;">
+            <h3>Usually the Processing and Prediction takes around 2 - 3 minutes. For better results, please upload a file with a duration of 10 seconds or more.</h3>
+            <h3>Try to avoid uploading files with background noise or music.</h3>
+            <h3 style="color:yellow;">Have conversation only between registered speakers.</h3>
+            <h3 style="color:yellow;">Please Wait Patiently for the Results !</h3>
+
+            <br>
+            <form action="/upload" method="post" enctype="multipart/form-data">
+                <label for="num_speakers">Number of Speakers:</label>
+                <input type="number" id="num_speakers" name="num_speakers" min="1" max="10" value="2" required>
+                
+                <input type="file" name="audio" accept="audio/*" required>
+                <button type="submit" class="btn">Upload</button>
+            </form>
+        </div>
+
+        <hr>
+
+        <!-- Audio Recording Section -->
+        <div class="record-section">
+            <h2>Record Audio</h2>
+            <canvas id="visualizer"></canvas>
+            <br><br>
+            <button id="startRecord" class="btn">Start Recording</button>
+            <br><br>
+            <button id="stopRecord" class="btn" disabled>Stop Recording</button>
+
+            <!-- Audio Display -->
+            <div class="audio-container" id="audio-container">
+                <audio id="audioPlayback" controls></audio>
+                <p id="audioFilename">Recorded Audio</p>
+            </div>
+
+            <!-- Upload Recorded Audio -->
+            <form action="/upload" method="post" enctype="multipart/form-data">
+                <label for="num_speakers_record">Number of Speakers:</label>
+                <input type="number" id="num_speakers_record" name="num_speakers" min="1" max="10" value="2" required>
+                
+                <input type="hidden" name="recordedAudio" id="recordedAudio">
+                <button type="submit" id="uploadRecorded" class="btn" disabled>Upload Recording</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let mediaRecorder;
+        let audioChunks = [];
+        let visualizer = document.getElementById("visualizer");
+        let canvasCtx = visualizer.getContext("2d");
+        let animationFrame;
+
+        visualizer.width = 220;
+        visualizer.height = 220;
+
+        document.getElementById("startRecord").addEventListener("click", async () => {
+            let stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream);
+
+            let audioContext = new AudioContext();
+            let source = audioContext.createMediaStreamSource(stream);
+            let analyser = audioContext.createAnalyser();
+            source.connect(analyser);
+            analyser.fftSize = 256;
+            let bufferLength = analyser.frequencyBinCount;
+            let dataArray = new Uint8Array(bufferLength);
+
+            // Add active class for RGB glow effect
+            visualizer.classList.add("active");
+
+            function drawCircularVisualizer() {
+                canvasCtx.clearRect(0, 0, visualizer.width, visualizer.height);
+                analyser.getByteFrequencyData(dataArray);
+                
+                let centerX = visualizer.width / 2;
+                let centerY = visualizer.height / 2;
+                let radius = 60; // Increased base radius
+
+                // Draw background circle
+                canvasCtx.beginPath();
+                canvasCtx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+                canvasCtx.strokeStyle = "rgba(255, 255, 255, 0.2)";
+                canvasCtx.lineWidth = 2;
+                canvasCtx.stroke();
+
+                // Calculate the current time for RGB cycling
+                let time = Date.now() * 0.001;
+
+                for (let i = 0; i < bufferLength; i++) {
+                    let angle = (i / bufferLength) * 2 * Math.PI;
+                    let barHeight = dataArray[i] / 2; // Increased height factor
+                    
+                    // Create dynamic RGB values based on time and position
+                    let r = Math.sin(time + i * 0.1) * 127 + 128;
+                    let g = Math.sin(time + i * 0.1 + 2) * 127 + 128;
+                    let b = Math.sin(time + i * 0.1 + 4) * 127 + 128;
+                    
+                    let x1 = centerX + Math.cos(angle) * radius;
+                    let y1 = centerY + Math.sin(angle) * radius;
+                    let x2 = centerX + Math.cos(angle) * (radius + barHeight);
+                    let y2 = centerY + Math.sin(angle) * (radius + barHeight);
+
+                    // Draw thicker lines with RGB colors
+                    canvasCtx.beginPath();
+                    canvasCtx.moveTo(x1, y1);
+                    canvasCtx.lineTo(x2, y2);
+                    canvasCtx.strokeStyle = `rgb(${r}, ${g}, ${b})`;
+                    canvasCtx.lineWidth = 4; // Thicker lines
+                    canvasCtx.lineCap = "round"; // Rounded line caps
+                    canvasCtx.stroke();
+                    
+                    // Add glow effect to lines
+                    canvasCtx.shadowBlur = 10;
+                    canvasCtx.shadowColor = `rgb(${r}, ${g}, ${b})`;
+                }
+
+                animationFrame = requestAnimationFrame(drawCircularVisualizer);
+            }
+
+            drawCircularVisualizer();
+            mediaRecorder.start();
+            document.getElementById("startRecord").disabled = true;
+            document.getElementById("stopRecord").disabled = false;
+
+            mediaRecorder.ondataavailable = event => {
+                audioChunks.push(event.data);
+            };
+
+            mediaRecorder.onstop = () => {
+                cancelAnimationFrame(animationFrame);
+                let audioBlob = new Blob(audioChunks, { type: "audio/wav" });
+                let audioUrl = URL.createObjectURL(audioBlob);
+                
+                let audioElement = document.getElementById("audioPlayback");
+                audioElement.src = audioUrl;
+                document.getElementById("audio-container").style.display = "block";
+
+                // Convert Blob to Base64 for form submission
+                let reader = new FileReader();
+                reader.readAsDataURL(audioBlob);
+                reader.onloadend = function () {
+                    document.getElementById("recordedAudio").value = reader.result;
+                    document.getElementById("uploadRecorded").disabled = false;
+                };
+            };
+        });
+
+        document.getElementById("stopRecord").addEventListener("click", () => {
+            mediaRecorder.stop();
+            document.getElementById("startRecord").disabled = false;
+            document.getElementById("stopRecord").disabled = true;
+            visualizer.classList.remove("active");
+            canvasCtx.shadowBlur = 0; // Reset shadow
+            
+            // Reset audioChunks for next recording
+            audioChunks = [];
+        });
+        
+        // Add clicked effect to all buttons
+        const buttons = document.querySelectorAll('.btn');
+        buttons.forEach(button => {
+            button.addEventListener('click', function() {
+                if (!this.disabled) {
+                    this.classList.add('clicked');
+                    setTimeout(() => {
+                        this.classList.remove('clicked');
+                    }, 500);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
